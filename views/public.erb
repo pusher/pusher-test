@@ -23,8 +23,12 @@
     }
 
     var print_message = function(msg) {
-      $('#messages').append("<li>"+msg+"</li>")
+      $('#messages').append("<li>"+msg+"</li>");
     }
+    
+    <% if @version < "1.5.0" %>
+    WebSocket.__swfLocation = "/WebSocketMain.swf";
+    <% end %>
     
     <% if @version >= '1.4.1' %>
     var pusher = new Pusher('<%= Pusher.key %>');
@@ -42,10 +46,10 @@
     status('connecting')
     
     pusher.bind("pusher:connection_established", function() {
-      status('connected')
+      status('connected');
     })
     pusher.bind("connection_established", function() {
-      status('connected')
+      status('connected');
     })
     
     pusher.bind("pusher:connection_failed", function() {
