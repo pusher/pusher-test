@@ -30,6 +30,14 @@
     WebSocket.__swfLocation = "/WebSocketMain.swf";
     <% end %>
     
+    // Enable pusher logging
+    Pusher.log = function() {
+      if (window.console) window.console.log.apply(window.console, arguments);
+    };
+
+    // Flash fallback logging
+    WEB_SOCKET_DEBUG = true;
+    
     <% if @version >= '1.4.1' %>
     var pusher = new Pusher('<%= Pusher.key %>');
     var channel = pusher.subscribe('channel');
