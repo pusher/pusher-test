@@ -1,0 +1,64 @@
+<script src="http://js.pusherapp.com/<%= @version %>/pusher.js"></script>
+
+<p><em>This page uses Pusher javascript version <%= @version %>.</em></p>
+<p>It tries to connect to channel 'channel' and listens on event 'event' for messages. These files are included in the version:</p>
+
+<% %w{pusher.js pusher.min.js}.each do |file| %>
+  <li><a href="http://js.pusherapp.com/<%= @version %>/<%= file %>"><%= file %></a></li>
+<% end %>
+
+<p>Connection status: <span id="status">unloaded</span></p>
+
+<p><a href="/hello" class="ajax">Say hello</a></p>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.ajax').click(function() {
+      $.post(this.href);
+      return false;
+    })
+    
+    var status = function(st) {
+      $('#status').text(st);
+    }
+
+    var print_message = function(msg) {
+      $('#messages').append("<li>"+msg+"</li>")
+    }
+    
+    <% if @version >= '1.4.1' %>
+    var pusher = new Pusher('<%= Pusher.key %>');
+    var channel = pusher.subscribe('channel');
+    channel.bind("event", function(data) {
+      print_message(data);
+    })
+    <% else %>
+    var pusher = new Pusher('<%= Pusher.key %>', 'channel');
+    pusher.bind("event", function(data) {
+      print_message(data);
+    })
+    <% end %>
+    
+    status('connecting')
+    
+    pusher.bind("pusher:connection_established", function() {
+      status('connected')
+    })
+    pusher.bind("connection_established", function() {
+      status('connected')
+    })
+    
+    pusher.bind("pusher:connection_failed", function() {
+      status('disconnected')
+    })
+    pusher.bind("connection_failed", function() {
+      status('disconnected')
+    })
+  })
+</script>
+
+<h2>Messages</h2>
+
+<ul id="messages">
+  
+</ul>
