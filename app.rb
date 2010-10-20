@@ -12,6 +12,8 @@ get '/' do
   erb :index
 end
 
+VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1 1.6.0 1.6.1}
+
 # /1.2.3
 get /\/(\d+.\d+.*\d*)/ do |version|
   @version = version
@@ -28,5 +30,16 @@ end
 helpers do
   def link_to(name, url)
     "<a href=#{url}>#{name}</a>"
+  end
+
+  def files(version)
+    case version
+    when ('1.1'...'1.2')
+      %w{pusher.js}
+    when ('1.2'...'1.7.0')
+      %w{pusher.js pusher.min.js WebSocketMain.swf}
+    else
+      %{unknown}
+    end
   end
 end

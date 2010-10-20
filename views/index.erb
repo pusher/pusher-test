@@ -1,7 +1,7 @@
 <p>This application is not supposed to look pretty. It's supposed to allow easy manual testing of Pusher's core functionality using any of the available javascript versions.</p>
 
 <ul>
-  <% %w{1.4.1 1.4.2 1.4.3 1.5.0 1.5.1 1.6.0 1.6.1}.each do |version| %>
+  <% VERSIONS.each do |version| %>
   <li><a href="/<%= version %>"><%= version %></a></li>
   <% end %>
 </ul>
