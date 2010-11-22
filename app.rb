@@ -12,11 +12,18 @@ get '/' do
   erb :index
 end
 
-VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1 1.6.0 1.6.1 1.6.2 1.6.3 1.6.4}
+VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1 1.6.0 1.6.1 1.6.2 1.6.3 1.6.4 1.7.0 dev}
 
 # /1.2.3
 get /\/(\d+.\d+.*\d*)/ do |version|
   @version = version
+  @ssl = params[:ssl]
+
+  erb :public
+end
+
+get '/dev' do
+  @version = 'dev'
 
   erb :public
 end
@@ -42,6 +49,22 @@ helpers do
       %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
     else
       %{unknown}
+    end
+  end
+
+  def host(version)
+    if version == 'dev'
+      'localhost:4500'
+    else
+      'js.pusherapp.com'
+    end
+  end
+
+  def source(version, file, ssl = false)
+    if ssl
+      "https://d3ds63zw57jt09.cloudfront.net/#{version}/#{file}"
+    else
+      "http://#{host(version)}/#{version}/#{file}"
     end
   end
 end
