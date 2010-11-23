@@ -54,21 +54,30 @@
     var channel = pusher.subscribe('channel');
     channel.bind("event", function(data) {
       print_message(data);
-    })
+    });
+    channel.bind('alert', function(data) {
+      alert(data);
+    });
     <% elsif @version >= '1.4.0' %>
     var pusher = new Pusher('<%= Pusher.key %>');
     var channel = pusher.subscribe('channel');
     channel.bind("event", function(data) {
       print_message(data);
-    })
+    });
+    channel.bind('alert', function(data) {
+      alert(data);
+    });
     <% else %>
     var pusher = new Pusher('<%= Pusher.key %>', 'channel');
     pusher.bind("event", function(data) {
       print_message(data);
-    })
+    });
+    pusher.bind('alert', function(data) {
+      alert(data);
+    });
     <% end %>
     
-    status('connecting')
+    status('connecting');
     
     pusher.bind("pusher:connection_established", function() {
       status('connected');
