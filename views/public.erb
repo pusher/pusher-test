@@ -2,8 +2,12 @@
 
 <p><em>This page uses Pusher javascript version <%= @version %> over <%= @ssl ? 'wss' : 'ws' %>.</em></p>
 
-<% if !@ssl && @version >= '1.7.0' %>
-<p><a href="?ssl=true">Switch to wss</a></p>
+<% if @version >= '1.7.0' %>
+  <% if @ssl %>
+    <p><a href="?">Switch to ws</a></p>
+  <% else %>
+    <p><a href="?ssl=true">Switch to wss</a></p>
+  <% end %>
 <% end %>
 
 <p>It tries to connect to channel 'channel' and listens on event 'event' for messages. These files are included in the version:</p>

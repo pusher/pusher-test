@@ -24,6 +24,7 @@ end
 
 get '/dev' do
   @version = 'dev'
+  @ssl = params[:ssl]
 
   erb :public
 end
