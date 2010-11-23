@@ -12,18 +12,18 @@ get '/' do
   erb :index
 end
 
-VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1 1.6.0 1.6.1 1.6.2 1.6.3 1.6.4 1.7.0 1.7.1 dev}
+VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1 1.6.0 1.6.1 1.6.2 1.6.3 1.6.4 1.7.0 1.7.1 dev 9.9.9-pre}
 
 # /1.2.3
-get /\/(\d+.\d+.*\d*)/ do |version|
+get /(\d+\.\d+\.\d+[-pre]*)/ do |version|
   @version = version
   @ssl = params[:ssl]
 
   erb :public
 end
 
-get '/dev' do
-  @version = 'dev'
+get '/:name' do |name|
+  @version = name
   @ssl = params[:ssl]
 
   erb :public
@@ -46,7 +46,7 @@ helpers do
       %w{pusher.js}
     when ('1.2'...'1.6.2')
       %w{pusher.js pusher.min.js WebSocketMain.swf}
-    when ('1.6.2'...'2.0')
+    when ('1.6.2'..'9.9.9-pre'), 'dev'
       %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
     else
       %{unknown}
@@ -56,6 +56,9 @@ helpers do
   def host(version)
     if version == 'dev'
       'localhost:4500'
+    elsif version =~ /pre/
+      # Serve pre versions without cloudfront to avoid caching
+      'pusher-js.s3.amazonaws.com'
     else
       'js.pusherapp.com'
     end
