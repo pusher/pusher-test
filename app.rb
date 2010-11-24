@@ -53,22 +53,18 @@ helpers do
     end
   end
 
-  def host(version)
+  def host(version, ssl = false)
     if version == 'dev'
       'localhost:4500'
     elsif version =~ /pre/
       # Serve pre versions without cloudfront to avoid caching
       'pusher-js.s3.amazonaws.com'
     else
-      'js.pusherapp.com'
+      ssl ? 'd3ds63zw57jt09.cloudfront.net' : 'js.pusherapp.com'
     end
   end
 
   def source(version, file, ssl = false)
-    if ssl
-      "https://d3ds63zw57jt09.cloudfront.net/#{version}/#{file}"
-    else
-      "http://#{host(version)}/#{version}/#{file}"
-    end
+    "#{ssl ? 'https' : 'http'}://#{host(version, ssl)}/#{version}/#{file}"
   end
 end
