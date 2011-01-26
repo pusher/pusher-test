@@ -42,6 +42,8 @@
     // Enable pusher logging
     Pusher.log = function() {
       if (window.console) window.console.log.apply(window.console, arguments);
+      var args = Array.prototype.slice.call(arguments);
+      $('#debug-console').append(args.join(' ') + "\n")
     };
 
     // Flash fallback logging
@@ -100,3 +102,9 @@
 <ul id="messages">
   
 </ul>
+
+<h2>Debug console</h2>
+
+<p><small>Also logged to javascript debug console, if available.</small></p>
+
+<pre id="debug-console"></pre>
