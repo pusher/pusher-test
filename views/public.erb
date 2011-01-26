@@ -43,7 +43,7 @@
     Pusher.log = function() {
       if (window.console) window.console.log.apply(window.console, arguments);
       var args = Array.prototype.slice.call(arguments);
-      $('#debug-console').append(args.join(' ') + "\n")
+      $('#debug-console').append(args.join(' ') + "\r\n")
     };
 
     // Flash fallback logging
