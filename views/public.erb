@@ -39,9 +39,11 @@
     WebSocket.__swfLocation = "/WebSocketMain.swf";
     <% end %>
     
-    // Enable pusher logging
     Pusher.log = function() {
-      if (window.console) window.console.log.apply(window.console, arguments);
+      if (window.console && window.console.log.apply) {
+        window.console.log.apply(window.console, arguments);
+      }
+
       var args = Array.prototype.slice.call(arguments);
       $('#debug-console').append(args.join(' ') + "\r\n")
     };
