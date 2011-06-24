@@ -58,13 +58,13 @@ helpers do
     when ('1.6.2'..'9.9.9-pre'), 'dev'
       %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
     else
-      %{unknown}
+      %w{unknown}
     end
   end
 
   def host(version, ssl = false)
     if version == '8.8.8'
-      'localhost:4500/dev'
+      'localhost:5555'
     elsif version =~ /pre/
       # Serve pre versions without cloudfront to avoid caching
       'pusher-js-staging.s3.amazonaws.com'
@@ -73,7 +73,15 @@ helpers do
     end
   end
 
+  def path(version, file)
+    if version == '8.8.8'
+      "#{file}"
+    else
+      "#{version}/#{file}"
+    end
+  end
+
   def source(version, file, ssl = false)
-    "#{ssl ? 'https' : 'http'}://#{host(version, ssl)}/#{version}/#{file}"
+    "#{ssl ? 'https' : 'http'}://#{host(version, ssl)}/#{path(version, file)}"
   end
 end
