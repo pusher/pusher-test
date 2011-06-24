@@ -18,6 +18,11 @@ VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1
   1.8.0 1.8.1 1.8.2 1.8.3 1.8.4
   8.8.8 9.9.9-pre}
 
+get '/favicon.ico' do
+  status 404
+  return '404'
+end
+
 # /1.2.3
 get /(\d+\.\d+\.\d+[-pre]*)/ do |version|
   @version = version
