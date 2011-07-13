@@ -52,14 +52,12 @@ helpers do
 
   def files(version)
     case version
-    when ('1.1'...'1.2')
+    when '1.1'...'1.2'
       %w{pusher.js}
-    when ('1.2'...'1.6.2')
+    when '1.2'...'1.6.2'
       %w{pusher.js pusher.min.js WebSocketMain.swf}
-    when ('1.6.2'..'9.9.9-pre'), 'dev'
-      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
     else
-      %w{unknown}
+      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
     end
   end
 
