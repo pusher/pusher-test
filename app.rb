@@ -66,9 +66,6 @@ helpers do
   def host(version, ssl = false)
     if version == '8.8.8'
       'localhost:5555'
-    elsif version =~ /pre/
-      # Serve pre versions without cloudfront to avoid caching
-      'pusher-js-staging.s3.amazonaws.com'
     else
       ssl ? 'd3ds63zw57jt09.cloudfront.net' : 'js.pusherapp.com'
     end
