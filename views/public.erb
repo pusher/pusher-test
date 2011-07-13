@@ -81,21 +81,27 @@
     });
     <% end %>
     
-    status('connecting');
-    
-    pusher.bind("pusher:connection_established", function() {
-      status('connected');
-    })
-    pusher.bind("connection_established", function() {
-      status('connected');
-    })
-    
-    pusher.bind("pusher:connection_failed", function() {
-      status('disconnected')
-    })
-    pusher.bind("connection_failed", function() {
-      status('disconnected')
-    })
+    <% if @version < '1.9.0' %>
+      status('connecting');
+
+      pusher.bind("pusher:connection_established", function() {
+        status('connected');
+      })
+      pusher.bind("connection_established", function() {
+        status('connected');
+      })
+
+      pusher.bind("pusher:connection_failed", function() {
+        status('disconnected')
+      })
+      pusher.bind("connection_failed", function() {
+        status('disconnected')
+      })
+    <% else %>
+      pusher.connection.bind('state_change', function(state) {
+        status(state.newState)
+      })
+    <% end %>
   })
 </script>
 
