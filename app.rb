@@ -17,7 +17,7 @@ VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1
   1.7.0 1.7.1 1.7.2 1.7.3 1.7.4 1.7.5 1.7.6
   1.8.0 1.8.1 1.8.2 1.8.3 1.8.4 1.8.5
   1.9.0
-  8.8.8 9.9.9-pre}
+  8.8.8} # Magic version number which links to localhost
 
 get '/favicon.ico' do
   status 404
