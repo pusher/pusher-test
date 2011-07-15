@@ -25,7 +25,7 @@ get '/favicon.ico' do
 end
 
 # /1.2.3
-get /(\d+\.\d+\.\d+[-pre]*)/ do |version|
+get(/(\d+\.\d+\.\d+[-pre]*)/) do |version|
   @version = version
   @ssl = params[:ssl]
 
