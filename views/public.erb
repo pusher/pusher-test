@@ -16,7 +16,11 @@
   <li><a href="<%= source(@version, file, @ssl) %>"><%= file %></a></li>
 <% end %>
 
-<p>Connection status: <strong><span id="status">unloaded</span></strong></p>
+<p>
+  Connection status: <strong><span id="status">unloaded</span></strong>
+  <a href="#" id="connect">Connect</a>
+  <a href="#" id="disconnect">Disconnect</a>
+</p>
 
 <p><a href="/hello" class="ajax">Say hello</a></p>
 
@@ -30,6 +34,16 @@
     var status = function(st) {
       $('#status').text(st);
     }
+
+    $('#connect').click(function() {
+      pusher.connect();
+      return false;
+    });
+
+    $('#disconnect').click(function() {
+      pusher.disconnect();
+      return false;
+    });
 
     var print_message = function(msg) {
       $('#messages').append("<li>"+msg+"</li>");
