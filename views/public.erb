@@ -113,7 +113,7 @@
       })
     <% else %>
       pusher.connection.bind('state_change', function(state) {
-        status(state.newState)
+        status(state.current)
       })
     <% end %>
   })
