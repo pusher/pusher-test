@@ -1,11 +1,24 @@
 require 'pusher'
 require 'sinatra'
 
+module Pusher
+  class << self
+    attr_accessor :ws_host
+    attr_accessor :ws_port
+    attr_accessor :wss_port
+  end
+end
+
 # On heroku these will be configured for you
 if development?
   Pusher.app_id = '2531'
   Pusher.key = '22364f2f790269bec0a0'
   Pusher.secret = 'f1d153a7995462c7e28c'
+  Pusher.host = 'localhost'
+  Pusher.port = 8081
+  Pusher.ws_host = 'localhost'
+  Pusher.ws_port = 8090
+  Pusher.wss_port = 9090
 end
 
 get '/' do

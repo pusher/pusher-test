@@ -62,6 +62,11 @@
       $('#debug-console').append(args.join(' ') + "\r\n")
     };
 
+    // Not usually required - used for debugging on multiple environments
+    Pusher.host = "<%= Pusher.ws_host || "ws.pusherapp.com" %>";
+    Pusher.ws_port = <%= Pusher.ws_port || 80 %>;
+    Pusher.wss_port = <%= Pusher.wss_port || 443 %>;
+
     // Flash fallback logging
     WEB_SOCKET_DEBUG = true;
     
