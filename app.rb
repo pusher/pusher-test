@@ -1,5 +1,6 @@
 require 'pusher'
 require 'sinatra'
+require 'version'
 
 module Pusher
   class << self
@@ -40,14 +41,14 @@ end
 
 # /1.2.3
 get(/(\d+\.\d+\.\d+[-pre]*)/) do |version|
-  @version = version
+  @version = Version.new(version)
   @ssl = params[:ssl]
 
   erb :public
 end
 
 get '/:name' do |name|
-  @version = name
+  @version = Version.new(name)
   @ssl = params[:ssl]
 
   erb :public
@@ -65,10 +66,9 @@ helpers do
   end
 
   def files(version)
-    case version
-    when '1.1'...'1.2'
+    if version >= '1.1' && version <= '1.2'
       %w{pusher.js}
-    when '1.2'...'1.6.2'
+    elsif version > '1.2' && version <= '1.6.2'
       %w{pusher.js pusher.min.js WebSocketMain.swf}
     else
       %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
