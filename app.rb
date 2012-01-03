@@ -79,7 +79,7 @@ helpers do
     if version == '8.8.8'
       'localhost:5555'
     else
-      ssl ? 'd3ds63zw57jt09.cloudfront.net' : 'js.pusherapp.com'
+      ssl ? 'd3dy5gmtp8yhk7.cloudfront.net' : 'js.pusher.com'
     end
   end
 
