@@ -11,10 +11,11 @@ module Pusher
 end
 
 # On heroku these will be configured for you
+
+Pusher.app_id = '2531'
+Pusher.key = '22364f2f790269bec0a0'
+Pusher.secret = 'f1d153a7995462c7e28c'
 if development?
-  Pusher.app_id = '2531'
-  Pusher.key = '22364f2f790269bec0a0'
-  Pusher.secret = 'f1d153a7995462c7e28c'
   Pusher.host = 'localhost'
   Pusher.port = 8081
   Pusher.ws_host = 'localhost'
