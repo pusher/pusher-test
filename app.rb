@@ -23,6 +23,13 @@ if development?
   Pusher.wss_port = 9090
 end
 
+if File.exists("/etc/pusher/pusher-test-config.yml")
+  require "yaml"
+  conf=YAML.load_file("/etc/pusher/pusher-test-config.yml")
+  Pusher.host=conf["host"] if conf.has_key? "host"
+  Pusher.ws_host=conf["ws_host"] if conf.has_key? "ws_host"
+end
+
 get '/' do
   erb :index
 end
