@@ -102,6 +102,9 @@ helpers do
   end
 
   def source(version, file, ssl = false)
+    if version == "8.8.8"
+      ssl = false
+    end
     "#{ssl ? 'https' : 'http'}://#{host(version, ssl)}/#{path(version, file)}"
   end
 end
