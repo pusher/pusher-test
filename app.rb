@@ -7,6 +7,9 @@ module Pusher
     attr_accessor :ws_host
     attr_accessor :ws_port
     attr_accessor :wss_port
+    attr_accessor :sockjs_host
+    attr_accessor :sockjs_http_port
+    attr_accessor :sockjs_https_port
   end
 end
 
@@ -21,6 +24,9 @@ if development?
   Pusher.ws_host = 'localhost'
   Pusher.ws_port = 8090
   Pusher.wss_port = 9090
+  Pusher.sockjs_host = 'localhost'
+  Pusher.sockjs_http_port = 18080
+  Pusher.sockjs_https_port = 18443
 end
 
 if File.exists?("/etc/pusher/pusher-test-config.yml")
