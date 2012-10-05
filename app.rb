@@ -7,6 +7,9 @@ module Pusher
     attr_accessor :ws_host
     attr_accessor :ws_port
     attr_accessor :wss_port
+    attr_accessor :sockjs_host
+    attr_accessor :sockjs_http_port
+    attr_accessor :sockjs_https_port
   end
 end
 
@@ -21,6 +24,9 @@ if development?
   Pusher.ws_host = 'localhost'
   Pusher.ws_port = 8090
   Pusher.wss_port = 9090
+  Pusher.sockjs_host = 'localhost'
+  Pusher.sockjs_http_port = 18080
+  Pusher.sockjs_https_port = 18443
 end
 
 if File.exists?("/etc/pusher/pusher-test-config.yml")
@@ -80,8 +86,10 @@ helpers do
       %w{pusher.js}
     elsif version > '1.2' && version <= '1.6.2'
       %w{pusher.js pusher.min.js WebSocketMain.swf}
-    else
+    elsif version <= '1.12.3'
       %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
+    else
+      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js sockjs.js sockjs.min.js WebSocketMain.swf}
     end
   end
 
@@ -102,6 +110,9 @@ helpers do
   end
 
   def source(version, file, ssl = false)
+    if version == "8.8.8"
+      ssl = false
+    end
     "#{ssl ? 'https' : 'http'}://#{host(version, ssl)}/#{path(version, file)}"
   end
 end
