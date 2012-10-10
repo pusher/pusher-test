@@ -82,14 +82,14 @@ helpers do
   end
 
   def files(version)
-    if version >= '1.1' && version <= '1.2'
-      %w{pusher.js}
-    elsif version > '1.2' && version <= '1.6.2'
-      %w{pusher.js pusher.min.js WebSocketMain.swf}
-    elsif version <= '1.12.3'
-      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
-    else
+    if version >= '1.12.4'
       %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js sockjs.js sockjs.min.js WebSocketMain.swf}
+    elsif version >= '1.6.2'
+      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
+    elsif version >= '1.2'
+      %w{pusher.js pusher.min.js WebSocketMain.swf}
+    else
+      %w{pusher.js}
     end
   end
 
