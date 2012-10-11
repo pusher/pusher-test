@@ -1,7 +1,12 @@
 <p>This application is not supposed to look pretty. It's supposed to allow easy manual testing of Pusher's core functionality using any of the available javascript versions.</p>
 
 <ul>
-  <% VERSIONS.each do |version| %>
-  <li><a href="/<%= version %>"><%= version %></a></li>
+  <% VERSIONS.reverse.each do |v| %>
+  <li><a href="/test<%= test_query_string(version: v) %>"><%= v %></a></li>
   <% end %>
 </ul>
+
+<p>
+  Environments available:
+  <%= Environment.list.join(', ') %>.
+</p>

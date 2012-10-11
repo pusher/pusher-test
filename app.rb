@@ -1,44 +1,46 @@
 require 'pusher'
 require 'sinatra'
 require 'version'
+require 'yaml'
 
-module Pusher
-  class << self
-    attr_accessor :ws_host
-    attr_accessor :ws_port
-    attr_accessor :wss_port
-    attr_accessor :sockjs_host
-    attr_accessor :sockjs_http_port
-    attr_accessor :sockjs_https_port
+class Environment
+  CONFIG = begin
+    YAML.load_file(File.expand_path('../config.yml', __FILE__))
   end
-end
 
-# On heroku these will be configured for you
+  attr_reader :name
 
-Pusher.app_id = '2531'
-Pusher.key = '22364f2f790269bec0a0'
-Pusher.secret = 'f1d153a7995462c7e28c'
-if development?
-  Pusher.host = 'localhost'
-  Pusher.port = 8081
-  Pusher.ws_host = 'localhost'
-  Pusher.ws_port = 8090
-  Pusher.wss_port = 9090
-  Pusher.sockjs_host = 'localhost'
-  Pusher.sockjs_http_port = 18080
-  Pusher.sockjs_https_port = 18443
-end
-
-if File.exists?("/etc/pusher/pusher-test-config.yml")
-  require "yaml"
-  conf=YAML.load_file("/etc/pusher/pusher-test-config.yml")
-  conf.each do |key,value|
-    Pusher.send("#{key}=",value)
+  def self.list
+    CONFIG.keys
   end
-end
 
-get '/' do
-  erb :index
+  def initialize(name)
+    @name = name
+    env_config = CONFIG[name] || raise("Unknown config")
+
+    # Default config
+    @config = {
+      app_id: '',
+      key: '',
+      secret: '',
+      host: 'api.pusherapp.com',
+      port: 80,
+      ws_host: 'ws.pusherapp.com',
+      ws_port: 80,
+      wss_port: 443,
+      sockjs_host: 'sockjs.pusher.com',
+      sockjs_http_port: 80,
+      sockjs_https_port: 443,
+    }.merge(env_config)
+  end
+
+  def client
+    @client ||= Pusher::Client.new(@config)
+  end
+
+  def [](attribute)
+    @config[attribute]
+  end
 end
 
 VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1
@@ -46,37 +48,54 @@ VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1
   1.7.0 1.7.1 1.7.2 1.7.3 1.7.4 1.7.5 1.7.6
   1.8.0 1.8.1 1.8.2 1.8.3 1.8.4 1.8.5 1.8.6
   1.9.0 1.9.1 1.9.2 1.9.3 1.9.4 1.9.5 1.9.6
-  1.10.0-pre 1.10.1
+  1.10.1
   1.11.0 1.11.1 1.11.2
-  1.12.0 1.12.1 1.12.2 1.12.3}
+  1.12.0 1.12.1 1.12.2 1.12.3 1.12.4
+}
+
+get '/' do
+  erb :index
+end
 
 get '/favicon.ico' do
   status 404
   return '404'
 end
 
-# /1.2.3
-get(/(\d+\.\d+\.\d+[-pre]*)/) do |version|
+get '/test' do
+  @ssl, version = test_config.values_at(:ssl, :version)
   @version = Version.new(version)
-  @ssl = params[:ssl]
+  @env = begin
+    pusher_env
+  rescue
+    return "Unknown environment #{params[:env]}. Please add to config.yml."
+  end
 
-  erb :public
-end
-
-get '/:name' do |name|
-  @version = Version.new(name)
-  @ssl = params[:ssl]
+  @js_host = if params[:js_host]
+    # You're probably developing the js and won't be serving it over ssl
+    "http://#{params[:js_host]}"
+  else
+    # Use the default js CDN
+    if @ssl
+      'https://d3dy5gmtp8yhk7.cloudfront.net'
+    else
+      'http://js.pusher.com'
+    end
+  end
 
   erb :public
 end
 
 post '/hello' do
-  Pusher['channel'].trigger('event', 'hello')
-
+  pusher_env.client['channel'].trigger('event', 'hello')
   return 'ok'
 end
 
 helpers do
+  def pusher_env
+    Environment.new(params[:env] || "default")
+  end
+
   def link_to(name, url)
     "<a href=#{url}>#{name}</a>"
   end
@@ -93,26 +112,19 @@ helpers do
     end
   end
 
-  def host(version, ssl = false)
-    if version == '8.8.8'
-      'localhost:5555'
-    else
-      ssl ? 'd3dy5gmtp8yhk7.cloudfront.net' : 'js.pusher.com'
-    end
+  def js_source(js_host, version, file)
+    "#{js_host}/#{version}/#{file}"
   end
 
-  def path(version, file)
-    if version == '8.8.8'
-      "#{file}"
-    else
-      "#{version}/#{file}"
-    end
+  def test_config(options = {})
+    {
+      env: params[:env] || 'default',
+      version: params[:version] || VERSIONS.last,
+      ssl: (params[:ssl] == 'true') || false,
+    }.merge(options)
   end
 
-  def source(version, file, ssl = false)
-    if version == "8.8.8"
-      ssl = false
-    end
-    "#{ssl ? 'https' : 'http'}://#{host(version, ssl)}/#{path(version, file)}"
+  def test_query_string(options)
+    '?' + test_config(options).map { |k,v| "#{k}=#{v}" }.join('&')
   end
 end

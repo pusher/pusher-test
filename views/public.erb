@@ -1,19 +1,21 @@
-<script src="<%= source(@version, 'pusher.js', @ssl) %>"></script>
+<script src="<%= js_source(@js_host, @version, 'pusher.js') %>"></script>
 
-<p><em>This page uses Pusher javascript version <%= @version %> over <%= @ssl ? 'wss' : 'ws' %>.</em></p>
-
-<% if @version >= '1.7.0' %>
-  <% if @ssl %>
-    <p><a href="?">Switch to ws</a></p>
-  <% else %>
-    <p><a href="?ssl=true">Switch to wss</a></p>
+<p><em>
+  Using pusher-js version <%= @version %>
+  <% if @version >= '1.7.0' %>
+    and connecting using
+    <% if @ssl %>
+      WSS/HTTPS <%= link_to "[toggle ssl]", test_query_string(ssl: false) %>
+    <% else %>
+      WS/HTTP <%= link_to "[toggle ssl]", test_query_string(ssl: true) %>
+    <% end %>
   <% end %>
-<% end %>
+</em></p>
 
-<p>It tries to connect to channel 'channel' and listens on event 'event' for messages. These files are included in the version:</p>
+<p>These files are included in version <%= @version %>:</p>
 
 <% files(@version).each do |file| %>
-  <li><a href="<%= source(@version, file, @ssl) %>"><%= file %></a></li>
+  <li><%= link_to file, js_source(@js_host, @version, file) %></li>
 <% end %>
 
 <p>
@@ -22,7 +24,7 @@
   <a href="#" id="disconnect">Disconnect</a>
 </p>
 
-<p><a href="/hello" class="ajax">Say hello</a></p>
+<p><a href="/hello?env=<%= @env.name %>" class="ajax">Say hello</a></p>
 
 <script type="text/javascript">
   $(document).ready(function() {
@@ -63,18 +65,18 @@
     };
 
     // Not usually required - used for debugging on multiple environments
-    Pusher.host = "<%= Pusher.ws_host || "ws.pusherapp.com" %>";
-    Pusher.ws_port = <%= Pusher.ws_port || 80 %>;
-    Pusher.wss_port = <%= Pusher.wss_port || 443 %>;
-    Pusher.sockjs_host = "<%= Pusher.sockjs_host || "sockjs.pusher.com" %>";
-    Pusher.sockjs_http_port = <%= Pusher.sockjs_http_port || 80 %>;
-    Pusher.sockjs_https_port = <%= Pusher.sockjs_https_port || 443 %>;
+    Pusher.host = "<%= @env[:ws_host] %>";
+    Pusher.ws_port = <%= @env[:ws_port] %>;
+    Pusher.wss_port = <%= @env[:wss_port] %>;
+    Pusher.sockjs_host = "<%= @env[:sockjs_host] %>";
+    Pusher.sockjs_http_port = <%= @env[:sockjs_http_port] %>;
+    Pusher.sockjs_https_port = <%= @env[:sockjs_https_port] %>;
 
     // Flash fallback logging
     WEB_SOCKET_DEBUG = true;
     
     <% if @version >= '1.7.0' && @ssl %>
-    pusher = new Pusher('<%= Pusher.key %>', {
+    pusher = new Pusher('<%= @env[:key] %>', {
       encrypted: true
     });
     channel = pusher.subscribe('channel');
@@ -85,7 +87,7 @@
       alert(data);
     });
     <% elsif @version >= '1.4.0' %>
-    pusher = new Pusher('<%= Pusher.key %>');
+    pusher = new Pusher('<%= @env[:key] %>');
     channel = pusher.subscribe('channel');
     channel.bind("event", function(data) {
       print_message(data);
@@ -94,7 +96,7 @@
       alert(data);
     });
     <% else %>
-    pusher = new Pusher('<%= Pusher.key %>', 'channel');
+    pusher = new Pusher('<%= @env[:key] %>', 'channel');
     pusher.bind("event", function(data) {
       print_message(data);
     });
