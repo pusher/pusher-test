@@ -1,39 +1,76 @@
 <script src="<%= js_source(@js_host, @version, 'pusher.js') %>"></script>
 
-<p><em>
-  Using pusher-js version <%= @version %>
-  <% if @version >= '1.7.0' %>
-    and connecting using
-    <% if @ssl %>
-      WSS/HTTPS <%= link_to "[toggle ssl]", test_query_string(ssl: false) %>
-    <% else %>
-      WS/HTTP <%= link_to "[toggle ssl]", test_query_string(ssl: true) %>
+<div class="row-fluid">
+  <div class="span9">
+    <div>
+      <a href="/hello?env=<%= @env.name %>" class="btn btn-primary ajax" data-loading-text="Loading...">Trigger (AJAX)</a>
+
+      <div class="btn-group" style="display:inline;">
+        <a href="#" id="connect" class="btn">Connect</a>
+        <a href="#" id="disconnect" class="btn">Disconnect</a>
+      </div>
+
+      <% if @ssl %>
+        <%= link_to "SSL off", test_query_string(ssl: false), class: 'btn' %>
+      <% else %>
+        <%= link_to "SSL on", test_query_string(ssl: true), class: 'btn' %>
+      <% end %>
+
+      <span class="label" id="status">-</span>
+    </div>
+
+    <h4>Event log</h4>
+
+    <ul class="" id="debug-console"></ul>
+  </div>
+
+  <div class="span3">
+    <h4>Using version <%= @version %></h4>
+
+    <% if @version >= '1.7.0' %>
+    <p>
+      Connecting using
+      <% if @ssl %>
+        <strong>WSS/HTTPS</strong>.
+      <% else %>
+        <strong>WS/HTTP</strong>.
+      <% end %>
+    </p>
     <% end %>
-  <% end %>
-</em></p>
 
-<p>These files are included in version <%= @version %>:</p>
+    <p>File list:</p>
 
-<% files(@version).each do |file| %>
-  <li><%= link_to file, js_source(@js_host, @version, file) %></li>
-<% end %>
+    <ul>
+      <% files(@version).each do |file| %>
+        <li><%= link_to file, js_source(@js_host, @version, file) %></li>
+      <% end %>
+    </ul>
 
-<p>
-  Connection status: <strong><span id="status">unloaded</span></strong>
-  <a href="#" id="connect">Connect</a>
-  <a href="#" id="disconnect">Disconnect</a>
-</p>
+    <div class="versions">
+      <h4>Use another version</h4>
 
-<p><a href="/hello?env=<%= @env.name %>" class="ajax">Say hello</a></p>
+      <div class="version-list" style="">
+        <% VERSIONS.reverse.each do |v| %>
+        <p><a href="/<%= test_query_string(version: v) %>"><%= v %></a></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript">
   $(document).ready(function() {
     $('.ajax').click(function() {
-      $.post(this.href);
+      button = $(this)
+      button.addClass('disabled')
+      $.post(this.href + '&' + Math.random(), null, function() {
+        button.removeClass('disabled')
+      });
       return false;
     })
     
     var status = function(st) {
+      writeLog('status', st)
       $('#status').text(st);
     }
 
@@ -48,7 +85,20 @@
     });
 
     var print_message = function(msg) {
-      $('#messages').append("<li>"+msg+"</li>");
+      writeLog('message', msg)
+    }
+
+    var writeLog = function(type, msg) {
+      var elem = $('#debug-console')[0]
+      var atBottom = (elem.scrollHeight - elem.scrollTop <= 600)
+
+      var now = moment().format('h:mm:ss');
+      $('#debug-console').prepend("<li class="+type+"><span class='label time'>" + now + "</span> <span class='label type "+type+"'>"+type+"</span> " + msg + "</li>")
+
+      // Used for auto scrolling text area
+      // if (atBottom) {
+      //   elem.scrollTop = elem.scrollHeight
+      // }
     }
     
     <% if @version < "1.5.0" %>
@@ -61,7 +111,7 @@
       }
 
       var args = Array.prototype.slice.call(arguments);
-      $('#debug-console').append(args.join(' ') + "\r\n")
+      writeLog('debug', args.join(' '))
     };
 
     // Not usually required - used for debugging on multiple environments
@@ -125,18 +175,10 @@
       pusher.connection.bind('state_change', function(state) {
         status(state.current)
       })
+
+      // pusher.connection._machine.bind('state_change', function(event) {
+      //   writeLog("internal-state", "Internal state machine transitioned from " + event.oldState + " to " + event.newState)
+      // })
     <% end %>
   })
 </script>
-
-<h2>Messages</h2>
-
-<ul id="messages">
-  
-</ul>
-
-<h2>Debug console</h2>
-
-<p><small>Also logged to javascript debug console, if available.</small></p>
-
-<pre id="debug-console"></pre>

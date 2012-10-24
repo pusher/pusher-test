@@ -53,16 +53,12 @@ VERSIONS = %w{1.1 1.2 1.2.1 1.3 1.4 1.4.1 1.4.2 1.4.3 1.5.0 1.5.1
   1.12.0 1.12.1 1.12.2 1.12.3 1.12.4
 }
 
-get '/' do
-  erb :index
-end
-
 get '/favicon.ico' do
   status 404
   return '404'
 end
 
-get '/test' do
+get '/' do
   @ssl, version = test_config.values_at(:ssl, :version)
   @version = Version.new(version)
   @env = begin
@@ -88,6 +84,7 @@ end
 
 post '/hello' do
   pusher_env.client['channel'].trigger('event', 'hello')
+  cache_control "no-cache"
   return 'ok'
 end
 
@@ -96,8 +93,8 @@ helpers do
     Environment.new(params[:env] || "default")
   end
 
-  def link_to(name, url)
-    "<a href=#{url}>#{name}</a>"
+  def link_to(name, url, options = {})
+    "<a href=\"#{url}\" class=\"#{options[:class]}\">#{name}</a>"
   end
 
   def files(version)

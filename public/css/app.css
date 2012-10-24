@@ -1,0 +1,35 @@
+body {
+  padding-top: 40px;
+}
+
+ul#debug-console {
+  list-style: none;
+  margin-left: 0;
+  
+/*  height: 600px;
+  border: 1px dotted #ccc;
+  overflow: scroll;*/
+}
+
+ul#debug-console li {
+  padding: 0.5em 0.5em;
+  border-bottom: 1px solid #eee;
+}
+
+ul#debug-console li.debug {
+  color: #999;
+}
+
+ul#debug-console li.message {
+  background-color: pink;
+  color: green;
+}
+
+.versions .version-list {
+  -webkit-column-count: 3;
+  -webkit-column-rule: 1px solid #eee;
+  -moz-column-count: 3;
+  -moz-column-rule: 1px solid #eee;
+  -column-count: 3;
+  -column-rule: 1px solid #eee;
+}
