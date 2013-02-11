@@ -2,10 +2,18 @@ body {
   padding-top: 40px;
 }
 
+#connect-group {
+ margin-right: 5px;
+}
+
+#connect, #disconnect {
+  margin-top: 6px;
+}
+
 ul#debug-console {
   list-style: none;
   margin-left: 0;
-  
+
 /*  height: 600px;
   border: 1px dotted #ccc;
   overflow: scroll;*/

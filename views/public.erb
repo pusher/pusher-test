@@ -3,11 +3,14 @@
 <div class="row-fluid">
   <div class="span9">
     <div>
-      <a href="/hello?env=<%= @env.name %>" class="btn btn-primary ajax" data-loading-text="Loading...">Trigger (AJAX)</a>
+      <a href="/hello?env=<%= @env.name %>" class="btn btn-primary ajax"
+         data-loading-text="Loading...">
+        Trigger (AJAX)
+      </a>
 
-      <span class="btn-group" style="margin-right: 5px">
-        <a href="#" id="connect" class="btn" style="margin-top: 6px">Connect</a>
-        <a href="#" id="disconnect" class="btn" style="margin-top: 6px">Disconnect</a>
+      <span id="connect-group" class="btn-group">
+        <a href="#" id="connect" class="btn">Connect</a>
+        <a href="#" id="disconnect" class="btn">Disconnect</a>
       </span>
 
       <% if @ssl %>
@@ -49,7 +52,7 @@
     <div class="versions">
       <h4>Use another version</h4>
 
-      <div class="version-list" style="">
+      <div class="version-list">
         <% VERSIONS.reverse.each do |v| %>
         <p><a href="/<%= test_query_string(version: v) %>"><%= v %></a></p>
         <% end %>
