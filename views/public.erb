@@ -5,10 +5,10 @@
     <div>
       <a href="/hello?env=<%= @env.name %>" class="btn btn-primary ajax" data-loading-text="Loading...">Trigger (AJAX)</a>
 
-      <div class="btn-group" style="display:inline;">
-        <a href="#" id="connect" class="btn">Connect</a>
-        <a href="#" id="disconnect" class="btn">Disconnect</a>
-      </div>
+      <span class="btn-group" style="margin-right: 5px">
+        <a href="#" id="connect" class="btn" style="margin-top: 6px">Connect</a>
+        <a href="#" id="disconnect" class="btn" style="margin-top: 6px">Disconnect</a>
+      </span>
 
       <% if @ssl %>
         <%= link_to "SSL off", test_query_string(ssl: false), class: 'btn' %>
@@ -60,19 +60,25 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
+    var pusher;
+
     $('.ajax').click(function() {
-      button = $(this)
-      button.addClass('disabled')
+      button = $(this);
+      button.addClass('disabled');
       $.post(this.href + '&' + Math.random(), null, function() {
-        button.removeClass('disabled')
+        button.removeClass('disabled');
       });
       return false;
-    })
-    
+    });
+
     var status = function(st) {
-      writeLog('status', st)
+      writeLog('status', st);
       $('#status').text(st);
-    }
+    };
+    var error = function(e) {
+      writeLog('error', e.toString());
+      $('#status').text(e.toString());
+    };
 
     $('#connect').click(function() {
       pusher.connect();
@@ -85,33 +91,33 @@
     });
 
     var print_message = function(msg) {
-      writeLog('message', msg)
-    }
+      writeLog('message', msg);
+    };
 
     var writeLog = function(type, msg) {
-      var elem = $('#debug-console')[0]
-      var atBottom = (elem.scrollHeight - elem.scrollTop <= 600)
+      var elem = $('#debug-console')[0];
+      var atBottom = (elem.scrollHeight - elem.scrollTop <= 600);
 
       var now = moment().format('h:mm:ss');
-      $('#debug-console').prepend("<li class="+type+"><span class='label time'>" + now + "</span> <span class='label type "+type+"'>"+type+"</span> " + msg + "</li>")
+      $('#debug-console').prepend("<li class="+type+"><span class='label time'>" + now + "</span> <span class='label type "+type+"'>"+type+"</span> " + msg + "</li>");
 
       // Used for auto scrolling text area
       // if (atBottom) {
       //   elem.scrollTop = elem.scrollHeight
       // }
     }
-    
+
     <% if @version < "1.5.0" %>
     WebSocket.__swfLocation = "/WebSocketMain.swf";
     <% end %>
-    
+
     Pusher.log = function() {
       if (window.console && window.console.log.apply) {
         window.console.log.apply(window.console, arguments);
       }
 
       var args = Array.prototype.slice.call(arguments);
-      writeLog('debug', args.join(' '))
+      writeLog('debug', args.join(' '));
     };
 
     // Not usually required - used for debugging on multiple environments
@@ -124,7 +130,7 @@
 
     // Flash fallback logging
     WEB_SOCKET_DEBUG = true;
-    
+
     <% if @version >= '1.7.0' && @ssl %>
     pusher = new Pusher('<%= @env[:key] %>', {
       encrypted: true
@@ -154,27 +160,33 @@
       alert(data);
     });
     <% end %>
-    
+    <% if @version >= '2.0.0' %>
+    writeLog("debug", "session id: " + pusher.sessionID);
+    <% end %>
+
     <% if @version < '1.9.0' %>
       status('connecting');
 
       pusher.bind("pusher:connection_established", function() {
         status('connected');
-      })
+      });
       pusher.bind("connection_established", function() {
         status('connected');
-      })
+      });
 
       pusher.bind("pusher:connection_failed", function() {
-        status('disconnected')
-      })
+        status('disconnected');
+      });
       pusher.bind("connection_failed", function() {
-        status('disconnected')
-      })
+        status('disconnected');
+      });
     <% else %>
       pusher.connection.bind('state_change', function(state) {
-        status(state.current)
-      })
+        status(state.current);
+      });
+      pusher.connection.bind('error', function(e) {
+        error(JSON.stringify(e));
+      });
 
       // pusher.connection._machine.bind('state_change', function(event) {
       //   writeLog("internal-state", "Internal state machine transitioned from " + event.oldState + " to " + event.newState)
