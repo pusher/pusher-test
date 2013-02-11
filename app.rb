@@ -71,12 +71,7 @@ get '/' do
     # You're probably developing the js and won't be serving it over ssl
     "http://#{params[:js_host]}"
   else
-    # Use the default js CDN
-    if @ssl
-      'https://d3dy5gmtp8yhk7.cloudfront.net'
-    else
-      'http://js.pusher.com'
-    end
+    @ssl ? "https://#{@env[:cdn_https_host]}" : "http://#{@env[:cdn_http_host]}"
   end
 
   erb :public
