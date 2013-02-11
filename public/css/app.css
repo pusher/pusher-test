@@ -20,9 +20,30 @@ ul#debug-console li.debug {
   color: #999;
 }
 
+ul#debug-console li.message span.label {
+  background-color: #1F6352;
+}
+
 ul#debug-console li.message {
-  background-color: pink;
-  color: green;
+  background-color: #90C7BA;
+  color: black;
+}
+
+ul#debug-console li.status span.label {
+  background-color: #0D58A6;
+}
+
+ul#debug-console li.status {
+  background-color: #C7CBD1;
+  color: black;
+}
+
+ul#debug-console li.error {
+  background-color: #F7ACB2;
+}
+
+ul#debug-console li.error span.label {
+  background-color: #A00010;
 }
 
 .versions .version-list {
