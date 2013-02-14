@@ -28,7 +28,7 @@
   </div>
 
   <div class="span3">
-    <h4>Using version <%= @version %></h4>
+    <h3>Using version <%= @version %></h3>
 
     <% if @version >= '1.7.0' %>
     <p>
@@ -41,7 +41,16 @@
     </p>
     <% end %>
 
-    <p>File list:</p>
+    <% if @version >= '2.0.0' %>
+      <h4>Transports</h4>
+      <ul id="transports">
+        <li><input type="checkbox" id="transport_ws">ws</li>
+        <li><input type="checkbox" id="transport_flash">flash</li>
+        <li><input type="checkbox" id="transport_sockjs">sockjs</li>
+      </ul>
+    <% end %>
+
+    <h4>Files</h4>
 
     <ul>
       <% files(@version).each do |file| %>
@@ -72,6 +81,7 @@ $(document).ready(function() {
   Pusher.sockjs_http_port = <%= @env[:sockjs_http_port] %>;
   Pusher.sockjs_https_port = <%= @env[:sockjs_https_port] %>;
 
+  bindTransportCheckboxes();
   run({
     key: "<%= @env[:key] %>",
     encrypted: <%= @ssl %>,

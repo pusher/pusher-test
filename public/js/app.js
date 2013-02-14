@@ -38,6 +38,32 @@ function logMessage(msg) {
   writeLog('message', msg);
 }
 
+function bindTransportCheckboxes() {
+  var transports = {
+    ws: Pusher.WSTransport,
+    flash: Pusher.FlashTransport,
+    sockjs: Pusher.SockJSTransport
+  };
+  function getCheckboxCallback(checkbox, transport) {
+    var isSupportedDefault = transport.isSupported;
+    var isSupportedDisabled = function() { return false; };
+    return function() {
+      if (checkbox.is(":checked")) {
+        transport.isSupported = isSupportedDefault;
+      } else {
+        transport.isSupported = isSupportedDisabled;
+      }
+    };
+  }
+  for (var transportName in transports) {
+    var transport = transports[transportName];
+    var checkbox = $("#transport_" + transportName);
+    checkbox.prop("checked", transport.isSupported());
+    checkbox.prop("disabled", !transport.isSupported());
+    checkbox.click(getCheckboxCallback(checkbox, transport));
+  }
+}
+
 function run(env) {
   var pusher;
 
