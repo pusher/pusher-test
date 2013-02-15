@@ -6,31 +6,24 @@ function compareVersions(a, b) {
   return 0;
 }
 
-function writeLog(type, msg) {
-  var elem = $('#debug-console')[0];
-  var atBottom = (elem.scrollHeight - elem.scrollTop <= 600);
-
-  var now = moment().format('HH:mm:ss');
-  $('#debug-console').prepend(
-    "<li class=" + type + ">" +
-      "<span class='label time'>" + now + "</span> " +
-      "<span class='label type " + type + "'>" + type + "</span> " +
-      msg +
-    "</li>"
-  );
-}
+var logger = new Logger($('#debug-console'), {
+  status: true,
+  message: true,
+  error: true,
+  debug: false
+});
 
 function logStatus(st) {
-  writeLog('status', st);
+  logger.log('status', st);
   $('#status').text(st);
 }
 
 function logError(e) {
-  writeLog('error', JSON.stringify(e));
+  logger.log('error', JSON.stringify(e));
 }
 
 function logMessage(msg) {
-  writeLog('message', msg);
+  logger.log('message', msg);
 }
 
 function bindTransportCheckboxes(enabledTransports) {
@@ -61,6 +54,23 @@ function bindTransportCheckboxes(enabledTransports) {
     checkbox.prop("disabled", !transport.isSupported());
     checkbox.click(checkboxCallback);
     checkboxCallback(); // update transport status immediately
+  }
+}
+
+function bindLogCheckboxes(enabledTypes) {
+  var types = ["status", "message", "debug", "error"];
+
+  function getCheckboxCallback(checkbox, type) {
+    return function() {
+      logger.setVisibility(type, checkbox.is(":checked"));
+    };
+  }
+  for (var i = 0; i < types.length; i++) {
+    var type = types[i];
+    var checkbox = $("#log_" + type);
+    var checkboxCallback = getCheckboxCallback(checkbox, type);
+    checkbox.prop("checked", enabledTypes[type] !== false);
+    checkbox.click(checkboxCallback);
   }
 }
 
@@ -96,7 +106,7 @@ function run(env) {
     }
 
     var args = Array.prototype.slice.call(arguments);
-    writeLog('debug', args.join(' '));
+    logger.log('debug', args.join(' '));
   };
 
   // Flash fallback logging
@@ -133,7 +143,7 @@ function run(env) {
   }
 
   if (compareVersions(env.version, [2,0,0]) >= 0) {
-    writeLog("debug", "session id: " + pusher.sessionID);
+    logger.log("debug", "session id: " + pusher.sessionID);
   }
 
   if (compareVersions(env.version, [1,9,0]) < 0) {

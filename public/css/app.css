@@ -59,12 +59,12 @@ ul#debug-console li.error span.label {
   -column-rule: 1px solid #eee;
 }
 
-#transports {
+#transports, #log_types {
   margin-left: 6px;
   list-style: none;
 }
 
-#transports li input {
+#transports li input, #log_types li input {
   margin-top: -1px;
   margin-right: 7px;
 }
