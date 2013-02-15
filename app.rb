@@ -75,7 +75,7 @@ get '/' do
     @ssl ? "https://#{@env[:cdn_https_host]}" : "http://#{@env[:cdn_http_host]}"
   end
 
-  enabled_transports = if params[:transports]
+  enabled_transports = if params[:transports].is_a?(Array)
     params[:transports]
   else
     ["ws", "flash", "sockjs"]
@@ -102,9 +102,11 @@ helpers do
 
   def files(version)
     if version >= '1.12.4'
-      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js sockjs.js sockjs.min.js WebSocketMain.swf}
+      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js
+         json2.min.js sockjs.js sockjs.min.js WebSocketMain.swf}
     elsif version >= '1.6.2'
-      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js json2.min.js WebSocketMain.swf}
+      %w{pusher.js pusher.min.js flashfallback.js flashfallback.min.js json2.js
+         json2.min.js WebSocketMain.swf}
     elsif version >= '1.2'
       %w{pusher.js pusher.min.js WebSocketMain.swf}
     else

@@ -18,11 +18,6 @@ function writeLog(type, msg) {
       msg +
     "</li>"
   );
-
-  // Used for auto scrolling text area
-  // if (atBottom) {
-  //   elem.scrollTop = elem.scrollHeight
-  // }
 }
 
 function logStatus(st) {
@@ -164,8 +159,5 @@ function run(env) {
     pusher.connection.bind('error', function(e) {
       logError(e);
     });
-    // pusher.connection._machine.bind('state_change', function(event) {
-    //   writeLog("internal-state", "Internal state machine transitioned from " + event.oldState + " to " + event.newState)
-    // })
   }
 }

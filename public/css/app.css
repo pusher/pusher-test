@@ -2,21 +2,17 @@ body {
   padding-top: 40px;
 }
 
-#connect-group {
- margin-right: 5px;
+#controls {
+  margin-top: 10px;
 }
 
-#connect, #disconnect {
-  margin-top: 6px;
+#connect-group {
+  display: inline-block;
 }
 
 ul#debug-console {
   list-style: none;
   margin-left: 0;
-
-/*  height: 600px;
-  border: 1px dotted #ccc;
-  overflow: scroll;*/
 }
 
 ul#debug-console li {
