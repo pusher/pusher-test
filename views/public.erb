@@ -81,7 +81,9 @@ $(document).ready(function() {
   Pusher.sockjs_http_port = <%= @env[:sockjs_http_port] %>;
   Pusher.sockjs_https_port = <%= @env[:sockjs_https_port] %>;
 
-  bindTransportCheckboxes();
+  <% if @version >= "2.0.0" %>
+    bindTransportCheckboxes(<%= JSON.generate(@transports) %>);
+  <% end %>
   run({
     key: "<%= @env[:key] %>",
     encrypted: <%= @ssl %>,

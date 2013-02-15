@@ -2,6 +2,7 @@ require 'pusher'
 require 'sinatra'
 require 'version'
 require 'yaml'
+require 'json'
 
 class Environment
   CONFIG = begin
@@ -73,6 +74,13 @@ get '/' do
   else
     @ssl ? "https://#{@env[:cdn_https_host]}" : "http://#{@env[:cdn_http_host]}"
   end
+
+  enabled_transports = if params[:transports]
+    params[:transports]
+  else
+    ["ws", "flash", "sockjs"]
+  end
+  @transports = Hash[enabled_transports.map { |t| [t, true] }]
 
   erb :public
 end
