@@ -61,6 +61,7 @@ end
 
 get '/' do
   @ssl, version = test_config.values_at(:ssl, :version)
+  @ssl = @ssl || false
   @version = Version.new(version)
   @env = begin
     pusher_env
@@ -122,11 +123,13 @@ helpers do
     {
       env: params[:env] || 'default',
       version: params[:version] || VERSIONS.last,
-      ssl: (params[:ssl] == 'true') || false,
-    }.merge(options)
+      ssl: params.key?("ssl") || nil,
+      js_host: params[:js_host],
+      transports: params[:transports],
+    }.merge(options).select { |k, v| v }
   end
 
   def test_query_string(options)
-    '?' + test_config(options).map { |k,v| "#{k}=#{v}" }.join('&')
+    "?#{Rack::Utils.build_nested_query(test_config(options))}"
   end
 end
