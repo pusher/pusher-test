@@ -47,6 +47,10 @@ function bindTransportCheckboxes(enabledTransports) {
   }
   for (var transportName in transports) {
     var transport = transports[transportName];
+    if (!transport) {
+      continue;
+    }
+
     var enabled = transport.isSupported() && enabledTransports[transportName];
     var checkbox = $("#transport_" + transportName);
     var checkboxCallback = getCheckboxCallback(checkbox, transport);
