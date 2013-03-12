@@ -1,140 +1,110 @@
-<script src="<%= source(@version, 'pusher.js', @ssl) %>"></script>
+<script src="<%= js_source(@js_host, @version, 'pusher.js') %>"></script>
 
-<p><em>This page uses Pusher javascript version <%= @version %> over <%= @ssl ? 'wss' : 'ws' %>.</em></p>
+<div class="row-fluid">
+  <div class="span9">
+    <div id="controls">
+      <a href="/hello?env=<%= @env.name %>" class="btn btn-primary ajax"
+         data-loading-text="Loading...">
+        Trigger (AJAX)
+      </a>
 
-<% if @version >= '1.7.0' %>
-  <% if @ssl %>
-    <p><a href="?">Switch to ws</a></p>
-  <% else %>
-    <p><a href="?ssl=true">Switch to wss</a></p>
-  <% end %>
-<% end %>
+      <span id="connect-group" class="btn-group">
+        <a href="#" id="connect" class="btn">Connect</a>
+        <a href="#" id="disconnect" class="btn">Disconnect</a>
+      </span>
 
-<p>It tries to connect to channel 'channel' and listens on event 'event' for messages. These files are included in the version:</p>
+      <% if @ssl %>
+        <%= link_to "SSL off", test_query_string(ssl: false), class: 'btn' %>
+      <% else %>
+        <%= link_to "SSL on", test_query_string(ssl: true), class: 'btn' %>
+      <% end %>
 
-<% files(@version).each do |file| %>
-  <li><a href="<%= source(@version, file, @ssl) %>"><%= file %></a></li>
-<% end %>
+      <span class="label" id="status">-</span>
+    </div>
 
-<p>
-  Connection status: <strong><span id="status">unloaded</span></strong>
-  <a href="#" id="connect">Connect</a>
-  <a href="#" id="disconnect">Disconnect</a>
-</p>
+    <h4>Event log</h4>
 
-<p><a href="/hello" class="ajax">Say hello</a></p>
+    <ul class="" id="debug-console"></ul>
+  </div>
 
+  <div class="span3">
+    <h3>Using version <%= @version %></h3>
+
+    <% if @version >= '1.7.0' %>
+    <p>
+      Connecting using
+      <% if @ssl %>
+        <strong>WSS/HTTPS</strong>.
+      <% else %>
+        <strong>WS/HTTP</strong>.
+      <% end %>
+    </p>
+    <% end %>
+
+    <% if @version >= '2.0.0' %>
+      <h4>Select transports</h4>
+      <ul id="transports">
+        <% ["ws", "flash", "sockjs"].each do |transport| %>
+          <li>
+            <input type="checkbox" id="transport_<%= transport %>">
+            <%= transport %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <h4>Filter logs</h4>
+    <ul id="log_types">
+      <% ["status", "message", "error", "debug"].each do |type| %>
+        <li>
+          <input type="checkbox" id="log_<%= type %>">
+          <%= type %>
+        </li>
+      <% end %>
+    </ul>
+
+    <h4>Files</h4>
+
+    <ul>
+      <% files(@version).each do |file| %>
+        <li><%= link_to file, js_source(@js_host, @version, file) %></li>
+      <% end %>
+    </ul>
+
+    <div class="versions">
+      <h4>Use another version</h4>
+
+      <div class="version-list">
+        <% VERSIONS.reverse.each do |v| %>
+        <p><a href="/<%= test_query_string(version: v) %>"><%= v %></a></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/js/logger.js"></script>
+<script type="text/javascript" src="/js/app.js"></script>
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('.ajax').click(function() {
-      $.post(this.href);
-      return false;
-    })
-    
-    var status = function(st) {
-      $('#status').text(st);
-    }
+$(document).ready(function() {
+  // Not usually required - used for debugging on multiple environments
+  Pusher.host = "<%= @env[:ws_host] %>";
+  Pusher.ws_port = <%= @env[:ws_port] %>;
+  Pusher.wss_port = <%= @env[:wss_port] %>;
+  Pusher.sockjs_host = "<%= @env[:sockjs_host] %>";
+  Pusher.sockjs_http_port = <%= @env[:sockjs_http_port] %>;
+  Pusher.sockjs_https_port = <%= @env[:sockjs_https_port] %>;
 
-    $('#connect').click(function() {
-      pusher.connect();
-      return false;
-    });
+  <% if @version >= "2.0.0" %>
+    bindTransportCheckboxes(<%= JSON.generate(@transports) %>);
+  <% end %>
 
-    $('#disconnect').click(function() {
-      pusher.disconnect();
-      return false;
-    });
+  bindLogCheckboxes(logger.types);
 
-    var print_message = function(msg) {
-      $('#messages').append("<li>"+msg+"</li>");
-    }
-    
-    <% if @version < "1.5.0" %>
-    WebSocket.__swfLocation = "/WebSocketMain.swf";
-    <% end %>
-    
-    Pusher.log = function() {
-      if (window.console && window.console.log.apply) {
-        window.console.log.apply(window.console, arguments);
-      }
-
-      var args = Array.prototype.slice.call(arguments);
-      $('#debug-console').append(args.join(' ') + "\r\n")
-    };
-
-    // Not usually required - used for debugging on multiple environments
-    Pusher.host = "<%= Pusher.ws_host || "ws.pusherapp.com" %>";
-    Pusher.ws_port = <%= Pusher.ws_port || 80 %>;
-    Pusher.wss_port = <%= Pusher.wss_port || 443 %>;
-    Pusher.sockjs_host = "<%= Pusher.sockjs_host || "sockjs.pusher.com" %>";
-    Pusher.sockjs_http_port = <%= Pusher.sockjs_http_port || 80 %>;
-    Pusher.sockjs_https_port = <%= Pusher.sockjs_https_port || 443 %>;
-
-    // Flash fallback logging
-    WEB_SOCKET_DEBUG = true;
-    
-    <% if @version >= '1.7.0' && @ssl %>
-    pusher = new Pusher('<%= Pusher.key %>', {
-      encrypted: true
-    });
-    channel = pusher.subscribe('channel');
-    channel.bind("event", function(data) {
-      print_message(data);
-    });
-    channel.bind('alert', function(data) {
-      alert(data);
-    });
-    <% elsif @version >= '1.4.0' %>
-    pusher = new Pusher('<%= Pusher.key %>');
-    channel = pusher.subscribe('channel');
-    channel.bind("event", function(data) {
-      print_message(data);
-    });
-    channel.bind('alert', function(data) {
-      alert(data);
-    });
-    <% else %>
-    pusher = new Pusher('<%= Pusher.key %>', 'channel');
-    pusher.bind("event", function(data) {
-      print_message(data);
-    });
-    pusher.bind('alert', function(data) {
-      alert(data);
-    });
-    <% end %>
-    
-    <% if @version < '1.9.0' %>
-      status('connecting');
-
-      pusher.bind("pusher:connection_established", function() {
-        status('connected');
-      })
-      pusher.bind("connection_established", function() {
-        status('connected');
-      })
-
-      pusher.bind("pusher:connection_failed", function() {
-        status('disconnected')
-      })
-      pusher.bind("connection_failed", function() {
-        status('disconnected')
-      })
-    <% else %>
-      pusher.connection.bind('state_change', function(state) {
-        status(state.current)
-      })
-    <% end %>
-  })
+  run({
+    key: "<%= @env[:key] %>",
+    encrypted: <%= @ssl %>,
+    version: <%= @version.to_s.split(".") %>
+  });
+});
 </script>
-
-<h2>Messages</h2>
-
-<ul id="messages">
-  
-</ul>
-
-<h2>Debug console</h2>
-
-<p><small>Also logged to javascript debug console, if available.</small></p>
-
-<pre id="debug-console"></pre>

@@ -1,0 +1,70 @@
+body {
+  padding-top: 40px;
+}
+
+#controls {
+  margin-top: 10px;
+}
+
+#connect-group {
+  display: inline-block;
+}
+
+ul#debug-console {
+  list-style: none;
+  margin-left: 0;
+}
+
+ul#debug-console li {
+  padding: 0.5em 0.5em;
+  border-bottom: 1px solid #eee;
+}
+
+ul#debug-console li.debug {
+  color: #999;
+}
+
+ul#debug-console li.message span.label {
+  background-color: #1F6352;
+}
+
+ul#debug-console li.message {
+  background-color: #90C7BA;
+  color: black;
+}
+
+ul#debug-console li.status span.label {
+  background-color: #0D58A6;
+}
+
+ul#debug-console li.status {
+  background-color: #C7CBD1;
+  color: black;
+}
+
+ul#debug-console li.error {
+  background-color: #F7ACB2;
+}
+
+ul#debug-console li.error span.label {
+  background-color: #A00010;
+}
+
+.versions .version-list {
+  -webkit-column-count: 3;
+  -webkit-column-rule: 1px solid #eee;
+  -moz-column-count: 3;
+  -moz-column-rule: 1px solid #eee;
+  -column-count: 3;
+  -column-rule: 1px solid #eee;
+}
+
+#transports, #log_types {
+  margin-left: 6px;
+  list-style: none;
+}
+
+#transports li input, #log_types li input {
+  margin-top: -1px;
+  margin-right: 7px;
+}
