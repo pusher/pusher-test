@@ -92,6 +92,11 @@ post '/hello' do
   return 'ok'
 end
 
+# Legacy route
+get(/(\d+\.\d+\.\d+[-pre]*)/) do |version|
+  redirect "/?version=#{version}"
+end
+
 helpers do
   def pusher_env
     Environment.new(params[:env] || "default")
