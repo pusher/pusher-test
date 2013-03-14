@@ -93,7 +93,7 @@ post '/hello' do
 end
 
 # Legacy route
-get(/(\d+\.\d+\.\d+[-pre]*)/) do |version|
+get(/^\/(\d+\.\d+(\.\d+[-pre]*)?)\/?$/) do |version, _|
   redirect "/?version=#{version}"
 end
 
