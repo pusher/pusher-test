@@ -32,6 +32,8 @@ class Environment
       sockjs_host: 'sockjs.pusher.com',
       sockjs_http_port: 80,
       sockjs_https_port: 443,
+      cdn_http_host: 'js.pusher.com',
+      cdn_https_host: 'd3dy5gmtp8yhk7.cloudfront.net',
     }.merge(env_config)
   end
 
