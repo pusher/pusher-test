@@ -23,7 +23,7 @@ function logError(e) {
 }
 
 function logMessage(msg) {
-  logger.log('message', msg);
+  logger.log('message', JSON.stringify(msg));
 }
 
 function bindTransportCheckboxes(enabledTransports) {
