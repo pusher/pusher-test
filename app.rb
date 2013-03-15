@@ -91,7 +91,7 @@ get '/' do
 end
 
 post '/hello' do
-  pusher_env.client['channel'].trigger('event', 'hello')
+  pusher_env.client.trigger('channel', 'event', {data: 'hello'})
   cache_control "no-cache"
   return 'ok'
 end
