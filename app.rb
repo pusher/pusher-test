@@ -7,6 +7,8 @@ require 'json'
 class Environment
   CONFIG = begin
     YAML.load_file(File.expand_path('../config.yml', __FILE__))
+  rescue Errno::ENOENT
+    raise "Please make sure that a ./config.yml file exists (see .example)"
   end
 
   attr_reader :name
