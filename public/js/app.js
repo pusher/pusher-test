@@ -10,7 +10,7 @@ var logger = new Logger($('#debug-console'), {
   status: true,
   message: true,
   error: true,
-  debug: false
+  debug: true
 });
 
 function logStatus(st) {
