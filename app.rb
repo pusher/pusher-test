@@ -4,11 +4,25 @@ require 'version'
 require 'yaml'
 require 'json'
 
+def symbolize(obj)
+  case obj
+  when Hash
+    obj.inject({}) { |mem, (k,v)| mem[k.to_sym] = symbolize(v); mem }
+  else
+    obj
+  end
+end
+
 class Environment
   CONFIG = begin
-    YAML.load_file(File.expand_path('../config.yml', __FILE__))
-  rescue Errno::ENOENT
-    raise "Please make sure that a ./config.yml file exists (see .example)"
+    if ENV["CONFIG_JSON"]
+      symbolize JSON.parse(ENV["CONFIG_JSON"])
+    else
+      YAML.load_file(File.expand_path('../config.yml', __FILE__))
+    end
+  rescue => e
+    puts "Config required in a CONFIG_JSON env variable or ./config.yml (see .example)"
+    raise e
   end
 
   attr_reader :name
@@ -19,7 +33,7 @@ class Environment
 
   def initialize(name)
     @name = name
-    env_config = CONFIG[name] || raise("Unknown config")
+    env_config = CONFIG[name.to_sym] || raise("Unknown config")
 
     # Default config
     @config = {
