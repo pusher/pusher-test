@@ -18,7 +18,7 @@ class Environment
     if ENV["CONFIG_JSON"]
       symbolize JSON.parse(ENV["CONFIG_JSON"])
     else
-      YAML.load_file(File.expand_path('../config.yml', __FILE__))
+      symbolize YAML.load_file(File.expand_path('../config.yml', __FILE__))
     end
   rescue => e
     puts "Config required in a CONFIG_JSON env variable or ./config.yml (see .example)"
