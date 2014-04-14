@@ -26,11 +26,15 @@ function logMessage(msg) {
   logger.log('message', JSON.stringify(msg));
 }
 
-function bindTransportCheckboxes(enabledTransports) {
+function bindTransportCheckboxes(encrypted, enabledTransports) {
   var transports = {
     ws: Pusher.WSTransport,
     flash: Pusher.FlashTransport,
-    sockjs: Pusher.SockJSTransport
+    sockjs: Pusher.SockJSTransport,
+    xhr_streaming: Pusher.XHRStreamingTransport,
+    xdr_streaming: Pusher.XDRStreamingTransport,
+    xhr_polling: Pusher.XHRPollingTransport,
+    xdr_polling: Pusher.XDRPollingTransport
   };
 
   function getCheckboxCallback(checkbox, transport) {
@@ -51,11 +55,12 @@ function bindTransportCheckboxes(enabledTransports) {
       continue;
     }
 
-    var enabled = transport.isSupported() && enabledTransports[transportName];
+    var env = { encrypted: encrypted };
+    var enabled = transport.isSupported(env) && enabledTransports[transportName];
     var checkbox = $("#transport_" + transportName);
     var checkboxCallback = getCheckboxCallback(checkbox, transport);
     checkbox.prop("checked", enabled);
-    checkbox.prop("disabled", !transport.isSupported());
+    checkbox.prop("disabled", !transport.isSupported(env));
     checkbox.click(checkboxCallback);
     checkboxCallback(); // update transport status immediately
   }
