@@ -115,9 +115,9 @@ end
 
 post '/pusher/auth' do
   content_type :json
-  pusher_env.client[params[:channel_name]].authenticate(params[:socket_id], {
-    :user_id => 1
-  }).to_json
+  pusher_env.client[params[:channel_name]]
+    .authenticate(params[:socket_id], user_id: rand(1000))
+    .to_json
 end
 
 # Legacy route
