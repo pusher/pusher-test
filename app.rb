@@ -108,9 +108,16 @@ get '/' do
 end
 
 post '/hello' do
-  pusher_env.client.trigger('channel', 'event', {data: 'hello'})
+  pusher_env.client.trigger('presence-channel', 'event', {data: 'hello'})
   cache_control "no-cache"
   return 'ok'
+end
+
+post '/pusher/auth' do
+  content_type :json
+  pusher_env.client[params[:channel_name]].authenticate(params[:socket_id], {
+    :user_id => 1
+  }).to_json
 end
 
 # Legacy route
