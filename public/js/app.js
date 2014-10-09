@@ -85,6 +85,7 @@ function bindLogCheckboxes(enabledTypes) {
 
 function run(env) {
   var pusher;
+  var channel;
 
   $('.ajax').click(function() {
     button = $(this);
@@ -93,6 +94,11 @@ function run(env) {
       button.removeClass('disabled');
     });
     return false;
+  });
+
+  $('#client').click(function() {
+    console.log(channel);
+    channel.trigger('client-event', { data: 'hello client' });
   });
 
   $('#connect').click(function() {
@@ -125,7 +131,7 @@ function run(env) {
     pusher = new Pusher(env.key, {
       encrypted: true
     });
-    channel = pusher.subscribe('channel');
+    channel = pusher.subscribe('presence-channel');
     channel.bind("event", function(data) {
       logMessage(data);
     });
@@ -134,7 +140,7 @@ function run(env) {
     });
   } else if (compareVersions(env.version, [1,4,0]) >= 0) {
     pusher = new Pusher(env.key);
-    channel = pusher.subscribe('channel');
+    channel = pusher.subscribe('presence-channel');
     channel.bind("event", function(data) {
       logMessage(data);
     });
@@ -142,7 +148,7 @@ function run(env) {
       alert(data);
     });
   } else {
-    pusher = new Pusher(env.key, 'channel');
+    pusher = new Pusher(env.key, 'presence-channel');
     pusher.bind("event", function(data) {
       logMessage(data);
     });
