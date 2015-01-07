@@ -107,6 +107,7 @@ $(document).ready(function() {
   bindLogCheckboxes(logger.types);
 
   run({
+    name: "<%= @env.name %>",
     key: "<%= @env[:key] %>",
     encrypted: <%= @ssl %>,
     version: <%= @version.to_s.split(".") %>

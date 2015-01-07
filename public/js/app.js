@@ -139,7 +139,11 @@ function run(env) {
       alert(data);
     });
   } else if (compareVersions(env.version, [1,4,0]) >= 0) {
-    pusher = new Pusher(env.key);
+    pusher = new Pusher(env.key, {
+      auth: {
+        params: { "env": env.name }
+      }
+    });
     channel = pusher.subscribe('presence-channel');
     channel.bind("event", function(data) {
       logMessage(data);
