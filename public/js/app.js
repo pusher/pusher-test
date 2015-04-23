@@ -97,7 +97,6 @@ function run(env) {
   });
 
   $('#client').click(function() {
-    console.log(channel);
     channel.trigger('client-event', { data: 'hello client' });
   });
 
