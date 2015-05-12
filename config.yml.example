@@ -2,3 +2,13 @@ default:
   :app_id: ''
   :key: ''
   :secret: ''
+  :host: 'api.pusherapp.com'
+  :port: 80
+  :ws_host: 'ws.pusherapp.com'
+  :ws_port: 80
+  :wss_port: 443
+  :sockjs_host: 'sockjs.pusher.com'
+  :sockjs_http_port: 80
+  :sockjs_https_port: 443
+  :cdn_http_host: 'js.pusher.com'
+  :cdn_https_host: 'js.pusher.com'
