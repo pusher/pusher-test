@@ -49,7 +49,7 @@
     <% if @version >= '2.0.0' %>
       <h4>Select transports</h4>
       <ul id="transports">
-        <% ["ws", "flash", "xhr_streaming", "xdr_streaming", "xhr_polling", "xdr_polling", "sockjs"].each do |transport| %>
+        <% supported_transports(@version).each do |transport| %>
           <li>
             <input type="checkbox" id="transport_<%= transport %>">
             <%= transport %>
@@ -101,7 +101,7 @@ $(document).ready(function() {
   Pusher.sockjs_https_port = <%= @env[:sockjs_https_port] %>;
 
   <% if @version >= "2.0.0" %>
-    bindTransportCheckboxes(<%= @ssl %>, <%= JSON.generate(@transports) %>);
+    bindTransportCheckboxes(<%= @ssl %>, <%= JSON.generate(@selected_transports) %>);
   <% end %>
 
   bindLogCheckboxes(logger.types);
