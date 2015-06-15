@@ -88,7 +88,7 @@ get '/' do
   @env = begin
     pusher_env
   rescue
-    return "Unknown environment #{params[:env]}. Please add to config.yml."
+    return "Unknown environment #{h(params[:env])}. Please add to config.yml."
   end
 
   @js_host = if params[:js_host]
@@ -175,5 +175,9 @@ helpers do
 
   def test_query_string(options)
     "?#{Rack::Utils.build_nested_query(test_config(options))}"
+  end
+
+  def h(text)
+    Rack::Utils.escape_html(text)
   end
 end
