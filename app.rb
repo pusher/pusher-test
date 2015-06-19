@@ -83,7 +83,13 @@ end
 
 get '/' do
   @ssl, version = test_config.values_at(:ssl, :version)
-  @ssl = @ssl || false
+  if request.secure?
+    @force_ssl = true
+    @ssl = true
+  else
+    @ssl = @ssl || false
+  end
+
   @version = Version.new(version)
   @env = begin
     pusher_env

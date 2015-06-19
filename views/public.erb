@@ -18,7 +18,9 @@
         <a href="#" id="disconnect" class="btn">Disconnect</a>
       </span>
 
-      <% if @ssl %>
+      <% if @force_ssl %>
+        <div class="btn disabled">SSL on</div>
+      <% elsif @ssl %>
         <%= link_to "SSL off", test_query_string(ssl: false), class: 'btn' %>
       <% else %>
         <%= link_to "SSL on", test_query_string(ssl: true), class: 'btn' %>
