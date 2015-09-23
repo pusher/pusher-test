@@ -128,7 +128,10 @@ function run(env) {
 
   if (compareVersions(env.version, [1,5,0]) >= 0 && env.encrypted) {
     pusher = new Pusher(env.key, {
-      encrypted: true
+      encrypted: true,
+      auth: {
+        params: { "env": env.name }
+      }
     });
     channel = pusher.subscribe('presence-channel');
     channel.bind("event", function(data) {
