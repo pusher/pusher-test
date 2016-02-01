@@ -74,7 +74,7 @@
 
     <ul>
       <% files(@version).each do |file| %>
-        <li><%= link_to file, js_source(@js_host, @version, file) %></li>
+        <li><%= link_to file, js_source(@js_host, h(@version), file) %></li>
       <% end %>
     </ul>
 
@@ -112,7 +112,7 @@ $(document).ready(function() {
     name: "<%= @env.name %>",
     key: "<%= @env[:key] %>",
     encrypted: <%= @ssl %>,
-    version: <%= @version.to_s.split(".") %>
+    version: <%= h(@version.to_s.split(".")) %>
   });
 });
 </script>
