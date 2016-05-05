@@ -26,16 +26,22 @@ function logMessage(msg) {
   logger.log('message', JSON.stringify(msg));
 }
 
-function bindTransportCheckboxes(encrypted, enabledTransports) {
-  var transports = {
-    ws: Pusher.WSTransport,
-    flash: Pusher.FlashTransport,
-    sockjs: Pusher.SockJSTransport,
-    xhr_streaming: Pusher.XHRStreamingTransport,
-    xdr_streaming: Pusher.XDRStreamingTransport,
-    xhr_polling: Pusher.XHRPollingTransport,
-    xdr_polling: Pusher.XDRPollingTransport
-  };
+function bindTransportCheckboxes(version, encrypted, enabledTransports) {
+
+  if (version >= "3.1.0") {
+    var transports = Pusher.Runtime.Transports;
+  } else {
+    var transports = {
+      ws: Pusher.WSTransport,
+      flash: Pusher.FlashTransport,
+      sockjs: Pusher.SockJSTransport,
+      xhr_streaming: Pusher.XHRStreamingTransport,
+      xdr_streaming: Pusher.XDRStreamingTransport,
+      xhr_polling: Pusher.XHRPollingTransport,
+      xdr_polling: Pusher.XDRPollingTransport
+    };
+  }
+
 
   function getCheckboxCallback(checkbox, transport) {
     var isSupportedDefault = transport.isSupported;
