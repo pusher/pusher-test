@@ -1,9 +1,9 @@
-<script src="<%= js_source(@js_host, @version, 'pusher.js') %>"></script>
+<script src="<%= js_source(@js_host, h(@version), 'pusher.js') %>"></script>
 
 <div class="row-fluid">
   <div class="span9">
     <div id="controls">
-      <a href="/hello?env=<%= @env.name %>" class="btn btn-primary ajax"
+      <a href="/hello?env=<%= h(@env.name) %>" class="btn btn-primary ajax"
          data-loading-text="Loading...">
         Trigger (AJAX)
       </a>
@@ -109,10 +109,10 @@ $(document).ready(function() {
   bindLogCheckboxes(logger.types);
 
   run({
-    name: "<%= @env.name %>",
-    key: "<%= @env[:key] %>",
+    name: <%= @env.name.inspect %>,
+    key: <%= @env[:key].inspect %>,
     encrypted: <%= @ssl %>,
-    version: <%= @version.to_s.split(".") %>
+    version: <%= @version.to_s.split(".").inspect %>
   });
 });
 </script>

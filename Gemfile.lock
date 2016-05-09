@@ -1,21 +1,23 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    multi_json (1.3.7)
-    pusher (0.11.0)
+    httpclient (2.8.0)
+    multi_json (1.12.0)
+    pusher (0.17.0)
+      httpclient (~> 2.7)
       multi_json (~> 1.0)
-      signature (~> 0.1.4)
-    rack (1.4.1)
-    rack-protection (1.2.0)
+      pusher-signature (~> 0.1.8)
+    pusher-signature (0.1.8)
+    rack (1.6.4)
+    rack-protection (1.5.3)
       rack
-    shotgun (0.9)
+    shotgun (0.9.1)
       rack (>= 1.0)
-    signature (0.1.4)
-    sinatra (1.3.3)
-      rack (~> 1.3, >= 1.3.6)
-      rack-protection (~> 1.2)
-      tilt (~> 1.3, >= 1.3.3)
-    tilt (1.3.3)
+    sinatra (1.4.7)
+      rack (~> 1.5)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    tilt (2.0.2)
 
 PLATFORMS
   ruby
@@ -24,3 +26,6 @@ DEPENDENCIES
   pusher
   shotgun
   sinatra
+
+BUNDLED WITH
+   1.12.3
