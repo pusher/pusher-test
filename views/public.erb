@@ -112,7 +112,7 @@ $(document).ready(function() {
     name: <%= @env.name.inspect %>,
     key: <%= @env[:key].inspect %>,
     encrypted: <%= @ssl %>,
-    version: <%= h(@version.to_s.split(".")) %>
+    version: "<%= h(@version.to_s.split(".")) %>"
   });
 });
 </script>
