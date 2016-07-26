@@ -48,6 +48,16 @@
     </p>
     <% end %>
 
+    <% if @version >= '1.4.0' %>
+      <h4>Choose cluster</h4>
+
+      <select name="env" id="cluster-choice">
+        <% @public_clusters.each do |cluster_shortcode| %>
+          <option value="<%= cluster_shortcode %>" <%= @env.name.to_s == cluster_shortcode.to_s ? 'selected="selected"' : '' %>><%= cluster_shortcode %></option>
+        <% end %>
+      </select>
+    <% end %>
+
     <% if @version >= '2.0.0' %>
       <h4>Select transports</h4>
       <ul id="transports">
@@ -107,6 +117,11 @@ $(document).ready(function() {
   <% end %>
 
   bindLogCheckboxes(logger.types);
+
+  $('#cluster-choice').change(function() {
+    var chosenCluster = $(this).find(":selected").text();
+    window.location.href = '/?env=' + chosenCluster;
+  })
 
   run({
     name: <%= @env.name.inspect %>,

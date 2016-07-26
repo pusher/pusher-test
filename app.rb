@@ -31,6 +31,11 @@ class Environment
     CONFIG.keys
   end
 
+  def self.list_public
+    public_clusters = [:mt1, :ap1, :eu]
+    CONFIG.keys.select { |k| public_clusters.include?(k) }
+  end
+
   def initialize(name)
     @name = name
     env_config = CONFIG[name.to_sym] || raise("Unknown config")
@@ -97,6 +102,8 @@ get '/' do
     return "Unknown environment #{h(params[:env])}. Please add to config.yml."
   end
 
+  @public_clusters = Environment.list_public
+
   @js_host = if params[:js_host]
     # You're probably developing the js and won't be serving it over ssl
     "http://#{params[:js_host]}"
@@ -134,7 +141,7 @@ end
 
 helpers do
   def pusher_env
-    Environment.new(params[:env] || "default")
+    Environment.new(params[:env] || "mt1")
   end
 
   def link_to(name, url, options = {})
@@ -171,7 +178,7 @@ helpers do
 
   def test_config(options = {})
     {
-      env: params[:env] || 'default',
+      env: params[:env] || 'mt1',
       version: params[:version] || VERSIONS.last,
       ssl: params.key?("ssl") || nil,
       js_host: params[:js_host],

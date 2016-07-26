@@ -137,7 +137,8 @@ function run(env) {
       encrypted: true,
       auth: {
         params: { "env": env.name }
-      }
+      },
+      cluster: env.name
     });
     channel = pusher.subscribe('presence-channel');
     channel.bind("event", function(data) {
@@ -150,7 +151,8 @@ function run(env) {
     pusher = new Pusher(env.key, {
       auth: {
         params: { "env": env.name }
-      }
+      },
+      cluster: env.name
     });
     channel = pusher.subscribe('presence-channel');
     channel.bind("event", function(data) {
