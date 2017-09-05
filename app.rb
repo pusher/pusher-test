@@ -164,7 +164,7 @@ helpers do
       %w{pusher.js}
     end
   end
-  
+
   def supported_transports(version)
     if version >= '3.0.0'
       %w{ws xhr_streaming xdr_streaming xhr_polling xdr_polling sockjs}
@@ -180,11 +180,19 @@ helpers do
   def test_config(options = {})
     {
       env: params[:env] || 'mt1',
-      version: params[:version] || VERSIONS.last,
+      version: verify_version(params[:version]),
       ssl: params.key?("ssl") || nil,
       js_host: params[:js_host],
       transports: params[:transports],
     }.merge(options).select { |k, v| v }
+  end
+
+  def verify_version(version)
+    if VERSIONS.include? version
+      return version
+    else
+      return VERSIONS.last
+    end
   end
 
   def test_query_string(options)
