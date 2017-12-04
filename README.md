@@ -27,3 +27,18 @@ See `Environment#initialize` in `app.rb` for a full list of possible options.
 ## Developing pusher-js
 
 You may find the `js_host` query parameter useful when combined with `jbundle server`: <http://localhost:9393/?js_host=localhost:5555>.
+
+## Deploying
+
+```
+heroku git:remote --app pusher-test-heroku
+git push heroku master
+```
+
+### Adding a new cluster
+
+1. Add the new cluster name to [this array](https://github.com/pusher/pusher-test/blob/58fb702f182c9159c6b5c095a5ca41d7cbf1baba/app.rb#L35) and deploy
+2. Create an app within the cluster
+    1. `heroku run rails console --app global-production`
+    2. `Account.where(email: "services+pushertest@pusher.com").first.apps.create(name: "test.pusher.com <cluster name>", cluster_id: <cluster ID>, ssl_only: false, client_events: true, batch_webhooks: true, counting: false)`
+3. Modify the `CONFIG_JSON` environment variable in Heroku with the details for the new cluster and app
