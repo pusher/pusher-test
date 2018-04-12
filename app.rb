@@ -105,12 +105,7 @@ get '/' do
 
   @public_clusters = Environment.list_public
 
-  @js_host = if params[:js_host]
-    # You're probably developing the js and won't be serving it over ssl
-    "http://#{params[:js_host]}"
-  else
-    @ssl ? "https://#{@env[:cdn_https_host]}" : "http://#{@env[:cdn_http_host]}"
-  end
+  @js_host = @ssl ? "https://#{@env[:cdn_https_host]}" : "http://#{@env[:cdn_http_host]}"
 
   enabled_transports = if params[:transports].is_a?(Array)
     params[:transports]
