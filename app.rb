@@ -100,7 +100,7 @@ get '/' do
   @env = begin
     pusher_env
   rescue
-    return "Unknown environment #{h(params[:env])}. Please add to config.yml."
+    return "Unknown environment."
   end
 
   @public_clusters = Environment.list_public
