@@ -24,10 +24,6 @@ It's possible to create multiple environments in `config.yml` and access them by
 
 See `Environment#initialize` in `app.rb` for a full list of possible options.
 
-## Developing pusher-js
-
-You may find the `js_host` query parameter useful when combined with `jbundle server`: <http://localhost:9393/?js_host=localhost:5555>.
-
 ## Deploying
 
 ```
