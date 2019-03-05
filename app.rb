@@ -32,7 +32,7 @@ class Environment
   end
 
   def self.list_public
-    public_clusters = [:mt1, :us2, :eu, :ap1, :ap2]
+    public_clusters = [:mt1, :us2, :us3, :eu, :ap1, :ap2, :ap3]
     CONFIG.keys.select { |k| public_clusters.include?(k) }
   end
 
